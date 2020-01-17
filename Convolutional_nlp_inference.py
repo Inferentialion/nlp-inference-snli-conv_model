@@ -170,6 +170,7 @@ class ConvModel(tf.keras.Model):
         self.dense = tf.keras.layers.Dense(3, activation='softmax')
 
     def __call__(self, hypotheses_inputs, premises_inputs):
+        
         # The embedding will share the weights for all the inputs (same embedding layer, different inputs):
         embedding_h = self.embedding(hypotheses_inputs)
         embedding_p = self.embedding(premises_inputs)
