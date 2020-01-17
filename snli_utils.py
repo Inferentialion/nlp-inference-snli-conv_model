@@ -9,21 +9,23 @@ import random
 current_directory = os.getcwd()
 
 
-def get_vocab(dataset):
-    """function specific and self-sufficient for getting the vocabulary out of a dataset generator"""
+def get_vocab(datasets):
+    """Function specific for getting the vocabulary out of a dataset generator or list of dataset generators."""
+    
     tokenizer = tfds.features.text.Tokenizer()
     vocab = set()
+    
+    for dataset in datasets:  # from all 3 splits datasets (train, validation and test).
+        for element in dataset:
+            # only tokenize the str elements of the dataset:
+            hypothesis = element['hypothesis']
+            premise = element['premise']
+            hypothesis_tokenized = tuple(tokenizer.tokenize(hypothesis))
+            premise_tokenized = tuple(tokenizer.tokenize(premise))
 
-    for element in dataset:
-        # only tokenize the str elements of the dataset:
-        hypothesis = element['hypothesis']
-        premise = element['premise']
-        hypothesis_tokenized = tuple(tokenizer.tokenize(hypothesis))
-        premise_tokenized = tuple(tokenizer.tokenize(premise))
-
-        joint_tokens = hypothesis_tokenized + premise_tokenized
-        for token in joint_tokens:
-            vocab.add(token)
+            joint_tokens = hypothesis_tokenized + premise_tokenized
+            for token in joint_tokens:
+                vocab.add(token)
 
     # put it into a pickle:
     with open(f'{current_directory}/generator_vocab.pickle', 'wb') as pickle_file:
