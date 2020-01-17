@@ -25,7 +25,7 @@ train_np, val_np, test_np = tfds.as_numpy(train_dataset), tfds.as_numpy(val_data
 
 if not os.path.isfile(r'./generator_vocab.pickle'):
     # Get the vocabulary for the first time:
-    vocab = list(get_vocab(train_np))
+    vocab = list(get_vocab([train_np, val_np, test_np]))
     print("\nVocab ready!")
 else:
     # Get the vocab (obtained by 'get_vocab' function in snli_utils) from the pickle:
@@ -336,21 +336,21 @@ print()
 print("-" * 80)
 print("VALIDATION SET PREDICTIONS:")
 
+
 # Evaluate on validation set:
 for batch, dataset_batch in enumerate(encoded_dataset_val):
 
-        hypotheses_inputs, premises_inputs, labels = dataset_batch['hypotheses'], dataset_batch['premises'], \
+    hypotheses_inputs, premises_inputs, labels = dataset_batch['hypotheses'], dataset_batch['premises'], \
                                                      dataset_batch['labels']
 
-        predictions = conv_model(hypotheses_inputs, premises_inputs)
-        current_loss = loss_object(labels, predictions)
+    predictions = conv_model(hypotheses_inputs, premises_inputs)
+    current_loss = loss_object(labels, predictions)
 
-        val_loss(current_loss)
-        val_accuracy(labels, predictions)
+    val_loss(current_loss)
+    val_accuracy(labels, predictions)
 
-        if batch % 50 == 0:
-                print('\nBatch {} => Nº Elements {} | Loss {:.4f} Accuracy {:.4f}'
-                          .format(batch + 1, (batch + 1) * 500, val_loss.result(), val_accuracy.result()))
+    print('\nBatch {} => Nº Elements {} | Loss {:.4f} Accuracy {:.4f}'
+              .format(batch + 1, (batch + 1) * 500, val_loss.result(), val_accuracy.result()))
 
 print()
 print("-" * 80)
@@ -359,15 +359,14 @@ print("TEST SET PREDICTIONS:")
 # Evaluate on test set:
 for batch, dataset_batch in enumerate(encoded_dataset_test):
 
-        hypotheses_inputs, premises_inputs, labels = dataset_batch['hypotheses'], dataset_batch['premises'], \
-                                                     dataset_batch['labels']
+    hypotheses_inputs, premises_inputs, labels = dataset_batch['hypotheses'], dataset_batch['premises'], \
+                                                 dataset_batch['labels']
 
-        predictions = conv_model(hypotheses_inputs, premises_inputs)
-        current_loss = loss_object(labels, predictions)
+    predictions = conv_model(hypotheses_inputs, premises_inputs)
+    current_loss = loss_object(labels, predictions)
 
-        test_loss(current_loss)
-        test_accuracy(labels, predictions)
+    test_loss(current_loss)
+    test_accuracy(labels, predictions)
 
-        if batch % 50 == 0:
-                print('\nBatch {} => Nº Elements {} | Loss {:.4f} Accuracy {:.4f}'
-                          .format(batch + 1, (batch + 1) * 500, test_loss.result(), test_accuracy.result()))
+    print('\nBatch {} => Nº Elements {} | Loss {:.4f} Accuracy {:.4f}'
+              .format(batch + 1, (batch + 1) * 500, test_loss.result(), test_accuracy.result()))
