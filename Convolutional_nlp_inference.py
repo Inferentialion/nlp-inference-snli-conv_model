@@ -238,7 +238,7 @@ class ConvModel(tf.keras.Model):
 
 # Choose an optimizer and loss function for training:
 loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)  # Possible improvement: trying a scheduled lr
 
 # Select metrics to measure and print the loss and the accuracy of the model during the training loop
 # (not internally used for optimization):
